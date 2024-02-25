@@ -1,4 +1,4 @@
-export const parseMessage = (message) => {
+export const parseMessage = (message: string): any => {
   let parsedMessage;
   try {
     parsedMessage = JSON.parse(message);
@@ -12,6 +12,6 @@ export const parseMessage = (message) => {
   };
 };
 
-export const stringifyMessage = (data) => {
+export const stringifyMessage = (data: any): any => {
   return JSON.stringify({ ...data, data: JSON.stringify(data.data) });
 };
