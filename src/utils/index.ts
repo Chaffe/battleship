@@ -1,5 +1,5 @@
-import {users} from "../data";
-import {IUserError} from "../interface/user";
+import { users } from "../data";
+import {IUserError} from "../interface/user";;
 
 export const parseMessage = (message: string): any => {
   let parsedMessage;

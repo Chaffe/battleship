@@ -10,7 +10,7 @@ import {
   attack,
   updateRoom,
   createRoom,
-  addUserToRoom
+  addUserToRoom,
 } from "../models";
 import { IWSCurrentUser } from "../interface/user";
 
@@ -55,7 +55,8 @@ wss.on('connection', function connection(ws: IWSCurrentUser) {
         break;
 
       case 'add_user_to_room':
-        addUserToRoom(ws, parsedMessage)
+        addUserToRoom(ws, parsedMessage);
+        updateRoom(ws, parsedMessage);
         break;
 
       case 'add_ships':

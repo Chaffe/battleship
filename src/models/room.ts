@@ -1,5 +1,4 @@
-import { WebSocket } from "ws";
-import { games, rooms, users } from "../data";
+import { games, rooms } from "../data";
 import { stringifyMessage } from "../utils";
 import { IUpdateRoomRequest } from "../interface/IWSRequest";
 import { IWSCurrentUser } from "../interface/user";
@@ -26,19 +25,51 @@ export const updateRoom = (ws: IWSCurrentUser, message: any): void => {
 };
 
 export const addUserToRoom = (ws: IWSCurrentUser, message: any): void => {
-  console.log('add_user_to_room')
-};
+  const roomIndex = rooms.findIndex((room) => room.roomId === message.data.indexRoom);
+  wss.clients.forEach((client) => {
+    const foundUser = rooms[roomIndex].roomUsers.find(
+      (user) => (client as IWSCurrentUser).index === user.index,
+    );
+    if (foundUser) {
+      client.send(addUserToRoomRequest(client as IWSCurrentUser, message, message.data.indexRoom));
+      ws.send(addUserToRoomRequest(ws, message, message.data.indexRoom));
+    }
+  });
+  removeFullRoom(message.data.indexRoom);
+  updateRoom(ws, message);
+}
 
-export const createGame = (ws: WebSocket, message: any): void => {
+export const addUserToRoomRequest = (ws: IWSCurrentUser, message: any, roomIndex: number) => {
+  const targetRoomIndex = rooms.findIndex((room) => room.roomId === roomIndex);
+  if (targetRoomIndex === -1) {
+    console.error(`Target room with index ${roomIndex} is not defined`);
+    return;
+  }
+
+  rooms[targetRoomIndex].roomUsers.push({ name: ws.name, index: +ws.index });
+
   const createGameRequest = {
     ...message,
     type: "create_game",
     data: {
-      idGame: Date.now(),
-      idPlayer: users.at(-1)?.index,
+      idGame: rooms[targetRoomIndex].roomId,
+      idPlayer: +ws.index,
     },
   };
 
-  games.push(createGameRequest.data);
-  ws.send(stringifyMessage(createGameRequest));
+  return stringifyMessage(createGameRequest);
 };
+
+export const removeFullRoom = (index: number): void => {
+  const roomIndex = rooms.findIndex((room) => room.roomId === index);
+  if (!roomIndex) {
+    console.error(`Target room with index ${roomIndex} is not defined`);
+    return;
+  }
+
+  if (index !== -1) {
+    const currentGame: any = { gameId: index, users: [] };
+    rooms.splice(roomIndex, 1);
+    games.push(currentGame);
+  }
+}
