@@ -2,24 +2,31 @@ import { WebSocket } from "ws";
 import { games, rooms, users } from "../data";
 import { stringifyMessage } from "../utils";
 import { IUpdateRoomRequest } from "../interface/IWSRequest";
+import { IWSCurrentUser } from "../interface/user";
+import { IRoom } from "../interface/room";
+import { wss } from "../http_server";
 
-export const updateRoom = (ws: WebSocket, message: any): void => {
-  const newRoom: any = {
+export const createRoom = (ws: IWSCurrentUser): void => {
+  const newRoom: IRoom = {
     roomId: Date.now(),
-    roomUsers: users,
-  }
+    roomUsers: [{ name: ws.name, index: ws.index }],
+  };
 
   rooms.push(newRoom);
+};
 
+export const updateRoom = (ws: IWSCurrentUser, message: any): void => {
   const updateRoomRequest: IUpdateRoomRequest = {
     ...message,
     type: 'update_room',
     data: rooms,
   }
 
-  // console.log('updateRoomRequest', updateRoomRequest);
+  wss.clients.forEach(client => client.send(stringifyMessage(updateRoomRequest)));
+};
 
-  ws.send(stringifyMessage(updateRoomRequest));
+export const addUserToRoom = (ws: IWSCurrentUser, message: any): void => {
+  console.log('add_user_to_room')
 };
 
 export const createGame = (ws: WebSocket, message: any): void => {
