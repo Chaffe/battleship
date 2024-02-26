@@ -1,6 +1,6 @@
-import IUser from "./user";
-import IRoom from "./room";
-import {IPosition, IShip} from "./ship";
+import { IUser } from "./user";
+import { IRoom } from "./room";
+import { IPosition, IShip } from "./ship";
 
 export interface IWSMessage {
   type: string;

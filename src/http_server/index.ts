@@ -39,7 +39,7 @@ wss.on('connection', function connection(ws) {
         addUser(ws, parsedMessage);
         // updateRoom(ws, parsedMessage);
         // updateWinners(ws, parsedMessage);
-        console.log('currentUsers', users);
+        // console.log('currentUsers', users);
         break;
 
       case 'create_room':

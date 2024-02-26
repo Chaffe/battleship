@@ -1,3 +1,6 @@
+import {users} from "../data";
+import {IUserError} from "../interface/user";
+
 export const parseMessage = (message: string): any => {
   let parsedMessage;
   try {
@@ -14,4 +17,20 @@ export const parseMessage = (message: string): any => {
 
 export const stringifyMessage = (data: any): any => {
   return JSON.stringify({ ...data, data: JSON.stringify(data.data) });
+};
+
+export const validateUser = ({ data }: any): IUserError => {
+  const isUserExist = users.find(({ name }) => name === data.name);
+
+  if (isUserExist) {
+    return {
+      error: !!isUserExist,
+      errorText: `User with name ${data.name} is already exists. Please choose another name`,
+    };
+  }
+
+  return {
+    error: !!isUserExist,
+    errorText: ''
+  };
 };

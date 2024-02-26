@@ -1,17 +1,21 @@
 import { WebSocket } from "ws";
-import { stringifyMessage } from "../utils";
+import { validateUser, stringifyMessage} from "../utils";
 import { users } from "../data";
-import {IWSRegRequest, IWSUpdateWinnersRequest} from "../interface/IWSRequest";
-import { IWSRegResponse } from '../interface/IWSResponse';
+import { IWSRegRequest, IWSUpdateWinnersRequest } from "../interface/IWSRequest";
 
 export const addUser = (ws: WebSocket, message: any): void => {
+  const { error, errorText } = validateUser(message);
+  if (error) {
+    console.error(errorText);
+  }
+
   const addUserRequest: IWSRegRequest = {
     ...message,
     data: {
       name: message.data.name,
       index: Date.now(),
-      error: false,
-      errorText: ''
+      error: error,
+      errorText: errorText,
     }
   };
 
