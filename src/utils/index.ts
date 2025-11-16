@@ -34,3 +34,5 @@ export const validateUser = ({ data }: any): IUserError => {
 export const stringifyMessage = (data: any): any => {
   return JSON.stringify({ ...data, data: JSON.stringify(data.data) });
 };
+
+export const generateId = (): string => Date.now().toString();

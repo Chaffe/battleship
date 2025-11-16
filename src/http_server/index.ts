@@ -5,7 +5,11 @@ import { WebSocketServer } from "ws";
 import { parseMessage } from "../utils";
 import { IWSCurrentUser } from "../types/user";
 import { WS_PORT } from "../consts";
-import { addUser, createRoom, updateRoom } from "../models";
+import {
+  addUser,
+  createRoom,
+  addUserToRoom
+} from "../models";
 
 export const httpServer = http.createServer(function (req: IncomingMessage, res: ServerResponse): void {
   const __dirname = path.resolve(path.dirname(''));
@@ -37,16 +41,14 @@ wss.on('connection', function connection(ws: IWSCurrentUser) {
     switch (parsedMessage.type) {
       case 'reg':
         addUser(ws, parsedMessage);
-        updateRoom(ws, parsedMessage);
         break;
 
       case 'create_room':
-        createRoom(ws);
-        updateRoom(ws, parsedMessage);
+        createRoom(ws, parsedMessage);
         break;
 
       case 'add_user_to_room':
-        // add user to room
+        addUserToRoom(ws, parsedMessage);
         break;
 
       case 'add_ships':
@@ -63,7 +65,7 @@ wss.on('connection', function connection(ws: IWSCurrentUser) {
     }
   });
 
-  // ws.on('close', () => {
-  //   console.log(`Client ${ws.name} disconnected`);
-  // });
+  ws.on('close', () => {
+    console.log(`Client ${ws.name} disconnected`);
+  });
 });
