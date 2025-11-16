@@ -5,6 +5,7 @@ import { WebSocketServer } from "ws";
 import { parseMessage } from "../utils";
 import { IWSCurrentUser } from "../types/user";
 import { WS_PORT } from "../consts";
+import { addUser, createRoom, updateRoom } from "../models";
 
 export const httpServer = http.createServer(function (req: IncomingMessage, res: ServerResponse): void {
   const __dirname = path.resolve(path.dirname(''));
@@ -35,11 +36,13 @@ wss.on('connection', function connection(ws: IWSCurrentUser) {
 
     switch (parsedMessage.type) {
       case 'reg':
-        // reg
+        addUser(ws, parsedMessage);
+        updateRoom(ws, parsedMessage);
         break;
 
       case 'create_room':
-        // create room
+        createRoom(ws);
+        updateRoom(ws, parsedMessage);
         break;
 
       case 'add_user_to_room':
