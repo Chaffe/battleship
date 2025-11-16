@@ -69,6 +69,15 @@ wss.on('connection', function connection(ws: IWSCurrentUser) {
   });
 
   ws.on('close', () => {
-    console.log(`Client ${ws.name} disconnected`);
+    console.log(`Client ${ws.name || 'unknown'} disconnected`);
+  });
+});
+
+process.on('SIGINT', () => {
+  console.log('Shutting down WebSocket server...');
+  wss.clients.forEach(client => client.close());
+  wss.close(() => {
+    console.log('WebSocket server closed');
+    process.exit(0);
   });
 });

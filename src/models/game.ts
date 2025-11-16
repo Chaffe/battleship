@@ -1,4 +1,4 @@
-import { stringifyMessage } from "../utils";
+import {generateId, stringifyMessage} from "../utils";
 import { users } from "../data";
 import { IWSCurrentUser } from "../types/user";
 import {IAttackRequest, IAttackWSRequest, IStartGameRequest, IWSMessage} from "../types/wsRequest";
@@ -36,6 +36,6 @@ export const attack = (ws: IWSCurrentUser, message: IWSMessage): void => {
   ws.send(stringifyMessage(attackRequest));
 }
 
-export const singlePlay = (ws: IWSCurrentUser, message: any): void => {
+export const singlePlay = (ws: IWSCurrentUser, message: IWSMessage): void => {
   console.log('single_play');
 };

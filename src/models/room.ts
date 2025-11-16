@@ -5,6 +5,7 @@ import {games, rooms} from "../data";
 import {IAddUserToRoomRequest, IUpdateRoomRequest, IWSMessage} from "../types/wsRequest";
 import { wss } from "../http_server";
 import {IGame} from "../types/game";
+import {MessageTypes} from "../consts";
 
 export const createRoom = (ws: IWSCurrentUser, message: IWSMessage): void => {
   const newRoom: IRoom = {
@@ -22,7 +23,7 @@ export const updateRoom = (ws: IWSCurrentUser, message: IWSMessage): void => {
 
   const updateRoomRequest: IUpdateRoomRequest = {
     ...roomMessage,
-    type: 'update_room',
+    type: MessageTypes.UPDATE_ROOM,
     data: rooms,
   }
 

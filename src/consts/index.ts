@@ -7,5 +7,6 @@ export enum MessageTypes {
   ADD_USER_TO_ROOM = "add_user_to_room",
   ADD_SHIPS = "add_ships",
   ATTACK = "attack",
-  SINGLE_PLAY = "single_play"
+  SINGLE_PLAY = "single_play",
+  UPDATE_ROOM = "update_room",
 }
