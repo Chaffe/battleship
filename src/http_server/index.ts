@@ -8,7 +8,10 @@ import { WS_PORT } from "../consts";
 import {
   addUser,
   createRoom,
-  addUserToRoom
+  addUserToRoom,
+  startGame,
+  attack,
+  singlePlay,
 } from "../models";
 
 export const httpServer = http.createServer(function (req: IncomingMessage, res: ServerResponse): void {
@@ -52,15 +55,15 @@ wss.on('connection', function connection(ws: IWSCurrentUser) {
         break;
 
       case 'add_ships':
-        // add ships
+        startGame(ws, parsedMessage);
         break;
 
       case 'attack':
-        // attack
+        attack(ws, parsedMessage);
         break;
 
       case 'single_play':
-        // single play
+        singlePlay(ws, parsedMessage);
         break;
     }
   });
