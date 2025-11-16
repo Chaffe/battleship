@@ -1,19 +1,20 @@
 import { IWSCurrentUser } from "../types/user";
 import {generateId, parseMessage, stringifyMessage, validateUser} from "../utils";
-import { IWSRegRequest } from "../types/wsRequest";
+import { IWSMessage, IWSRegRequest } from "../types/wsRequest";
 import { users } from "../data";
 import { updateRoom } from "./room";
 
-export const addUser = (ws: IWSCurrentUser, message: any): void => {
-  const errorStatus = validateUser(message);
+export const addUser = (ws: IWSCurrentUser, message: IWSMessage): void => {
+  const userMessage = message as IWSRegRequest;
+  const errorStatus = validateUser(userMessage);
   if (errorStatus.error) {
     console.error(errorStatus.errorText);
   }
 
-  const addUserRequest: IWSRegRequest = {
-    ...message,
+  const addUserRequest: IWSMessage = {
+    ...userMessage,
     data: {
-      name: message.data.name,
+      name: userMessage.data.name,
       index: generateId(),
       ...errorStatus,
     }
@@ -24,5 +25,5 @@ export const addUser = (ws: IWSCurrentUser, message: any): void => {
   users.push(addUserRequest.data);
   ws.send(stringifyMessage(addUserRequest));
 
-  updateRoom(ws, parseMessage);
+  updateRoom(ws, userMessage);
 };

@@ -1,14 +1,16 @@
 import { stringifyMessage } from "../utils";
 import { users } from "../data";
 import { IWSCurrentUser } from "../types/user";
-import { IAttackRequest } from "../types/wsRequest";
+import {IAttackRequest, IAttackWSRequest, IStartGameRequest, IWSMessage} from "../types/wsRequest";
 
-export const startGame = (ws: IWSCurrentUser, message: any): void => {
+export const startGame = (ws: IWSCurrentUser, message: IWSMessage): void => {
+  const gameMessage = message as IStartGameRequest;
+
   const startGameRequest = {
-    ...message,
+    ...gameMessage,
     type: 'start_game',
     data: {
-      ships: message.data.ships,
+      ships: gameMessage.data.ships,
       currentPlayerIndex: users[users.length -1].index,
     }
   };
@@ -16,15 +18,17 @@ export const startGame = (ws: IWSCurrentUser, message: any): void => {
   ws.send(stringifyMessage(startGameRequest));
 };
 
-export const attack = (ws: IWSCurrentUser, message: any): void => {
+export const attack = (ws: IWSCurrentUser, message: IWSMessage): void => {
+  const gameMessage = message as IAttackWSRequest;
+
   const attackRequest: IAttackRequest = {
     ...message,
     data: {
       position: {
-        x: message.data.x,
-        y: message.data.y,
+        x: gameMessage.data.x,
+        y: gameMessage.data.y,
       },
-      currentPlayer: message.data.indexPlayer,
+      currentPlayer: gameMessage.data.indexPlayer,
       status: 'miss',
     }
   }

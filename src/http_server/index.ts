@@ -4,7 +4,7 @@ import http, { IncomingMessage, ServerResponse } from 'http';
 import { WebSocketServer } from "ws";
 import { parseMessage } from "../utils";
 import { IWSCurrentUser } from "../types/user";
-import { WS_PORT } from "../consts";
+import { MessageTypes, WS_PORT } from "../consts";
 import {
   addUser,
   createRoom,
@@ -42,27 +42,27 @@ wss.on('connection', function connection(ws: IWSCurrentUser) {
     console.log(parsedMessage);
 
     switch (parsedMessage.type) {
-      case 'reg':
+      case MessageTypes.REG:
         addUser(ws, parsedMessage);
         break;
 
-      case 'create_room':
+      case MessageTypes.CREATE_ROOM:
         createRoom(ws, parsedMessage);
         break;
 
-      case 'add_user_to_room':
+      case MessageTypes.ADD_USER_TO_ROOM:
         addUserToRoom(ws, parsedMessage);
         break;
 
-      case 'add_ships':
+      case MessageTypes.ADD_SHIPS:
         startGame(ws, parsedMessage);
         break;
 
-      case 'attack':
+      case MessageTypes.ATTACK:
         attack(ws, parsedMessage);
         break;
 
-      case 'single_play':
+      case MessageTypes.SINGLE_PLAY:
         singlePlay(ws, parsedMessage);
         break;
     }

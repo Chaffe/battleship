@@ -1,7 +1,8 @@
-import {IUserError} from "../types/user";
+import { IUserError } from "../types/user";
 import { users } from "../data";
+import {IWSMessage, IWSRegRequest} from "../types/wsRequest";
 
-export const parseMessage = (message: string): any => {
+export const parseMessage = (message: string): IWSMessage => {
   let parsedMessage;
   try {
     parsedMessage = JSON.parse(message);
@@ -12,10 +13,11 @@ export const parseMessage = (message: string): any => {
   return {
     ...parsedMessage,
     data: parsedMessage.data ? JSON.parse(parsedMessage.data) : '',
-  };
+  } as IWSMessage;
 };
 
-export const validateUser = ({ data }: any): IUserError => {
+export const validateUser = (message: IWSRegRequest): IUserError => {
+  const data = message.data;
   const isUserExist = users.find(({ name }) => name === data.name);
 
   if (isUserExist) {
